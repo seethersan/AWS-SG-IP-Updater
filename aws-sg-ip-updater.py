@@ -14,9 +14,10 @@ def get_current_ip():
     r = requests.get(r'http://jsonip.com')
     return r.json()['ip'] + '/32'
 
-def add_ip(current_ip, sg_id, port, protocol):
+def add_ip(current_ip, sg_id, port, protocol, profile):
     """Add current IP to the security group"""
 
+    boto3.setup_default_session(profile_name=profile)
     # setup client for ec2
     client = boto3.client("ec2")
 
@@ -31,9 +32,10 @@ def add_ip(current_ip, sg_id, port, protocol):
     )
     print response
 
-def remove_ip(current_ip, sg_id, port, protocol):
+def remove_ip(current_ip, sg_id, port, protocol, profile):
     """remove current IP from the security group"""
 
+    boto3.setup_default_session(profile_name=profile)
     # setup client for ec2
     client = boto3.client("ec2")
 
@@ -109,9 +111,9 @@ def main():
 
     # add or remove current ip to the security group
     if remove == True:
-        remove_ip(ip, sg_id, port, protocol)
+        remove_ip(ip, sg_id, port, protocol, profile)
     else:
-        add_ip(ip, sg_id, port, protocol)
+        add_ip(ip, sg_id, port, protocol, profile)
 
 if __name__ == "__main__":
     main()
